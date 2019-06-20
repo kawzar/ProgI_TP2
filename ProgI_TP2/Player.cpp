@@ -6,14 +6,19 @@
 using namespace std;
 
 
-Player::Player()
+Player::Player(const int positions[])
 {
 	_tx.loadFromFile("Images/jumper.png");
 	_sprite.setTexture(_tx);
-	_sprite.setOrigin(_tx.getSize().x / 2, 0);
+	_sprite.setOrigin(_tx.getSize().x / 2, _tx.getSize().y);
 	x = 160;
 	y = 525;
 	faceLeft = true;
+	currentPlatform = 0;
+
+	for (int i = 0; i < 7; i++) {
+		platformPositions[i] = positions[i];
+	}
 }
 
 
@@ -67,15 +72,17 @@ void Player::updateMovement() {
 	x += velocityX;
 	y += velocityY;
 
-	isGrounded = y >= floor;
+	isGrounded = y >= platformPositions[currentPlatform];
 
-	if (y > floor) {
-		y = floor;
+	if (y > platformPositions[currentPlatform]) {
+		y = platformPositions[currentPlatform];
 		colliding = false;
 	}
 
-	if (y < maxJump) {
-		y = maxJump;
+	if (currentPlatform < 6  && y < platformPositions[currentPlatform + 1] && !isGrounded && velocityY < 0) {
+		y = platformPositions[currentPlatform];
+		currentPlatform++;
+		cout << "hola";
 	}
 }
 

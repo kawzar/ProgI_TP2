@@ -7,7 +7,8 @@ using namespace std;
 
 Game::Game()
 {
-	_player = new Player();
+	int platformPositions[] = { 524, 450, 374, 298, 222, 150, 74 };
+	_player = new Player(platformPositions);
 
 	InitWindow();
 	InitClock();

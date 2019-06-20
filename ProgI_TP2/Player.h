@@ -7,7 +7,7 @@ using namespace sf;
 class Player
 {
 public:
-	Player();
+	Player(const int positions[]);
 	~Player();
 
 	void move(float velocity);
@@ -28,7 +28,9 @@ protected:
 	bool colliding;
 	const int floor = 465;
 	const int maxJump = 395;
-
+	int platformPositions[7];
+	
+	int currentPlatform;
 	float x = 0;
 	float y = 0;
 	float velocityX = 0;
