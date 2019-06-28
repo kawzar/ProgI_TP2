@@ -13,6 +13,7 @@ Game::Game()
 	InitWindow();
 	InitClock();
 	InitSound();
+	InitFloor1();
 }
 
 
@@ -28,6 +29,7 @@ void Game::Loop()
 			UpdateClock();
 			EventHandling();
 			InputHandling();
+			MoveEnemies();
 			Update();
 			Draw();
 			CheckWinCondition();
@@ -79,6 +81,7 @@ void Game::EventHandling()
 void Game::Update()
 {
 	_player->update();
+	UpdateEnemies();
 
 }
 
@@ -91,6 +94,7 @@ void Game::Draw()
 
 	
 	_player->draw(_window);
+	DrawEnemies();
 	
 	_window->display();
 }
@@ -189,4 +193,35 @@ void Game::CheckWinCondition() {
 		playerWon = false;
 	}
 
+}
+
+void Game::InitFloor1() {
+	enemyStack1Left.Push(new Enemy(EnemyColor::blue, 50, 450));
+	enemyStack1Left.Push(new Enemy(EnemyColor::red, 80, 450));
+	enemyStack1Left.Push(new Enemy(EnemyColor::yellow, 110, 450));
+
+	floor1Enemy = NULL;
+}
+
+void Game::UpdateEnemies() {
+	enemyStack1Left.Update();
+	enemyStack1right.Update();
+}
+
+void Game::DrawEnemies() {
+	enemyStack1Left.Draw(_window);
+	enemyStack1right.Draw(_window);
+}
+
+void Game::MoveEnemies() {
+	if (floor1Enemy == NULL && !enemyStack1Left.IsEmpty()) {
+		floor1Enemy = enemyStack1Left.Last();
+		floor1Enemy->move(1.0f);
+	}
+	else if (floor1Enemy && floor1Enemy->IsMovingRight() && ((enemyStack1right.Last() && floor1Enemy->GetXPosition() >= enemyStack1right.Last()->GetXPosition() - floor1Enemy->getBounds().width)|| floor1Enemy->GetXPosition() >= 750)) { 
+		floor1Enemy->move(0.0f); // stop moving
+		enemyStack1right.Push(floor1Enemy); // change stack
+		enemyStack1Left.Pop();
+		floor1Enemy = NULL;
+	}
 }

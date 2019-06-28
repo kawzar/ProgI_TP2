@@ -2,7 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Player.h"
-#include <list>
+#include "Enemy.h"
+#include "Stack.h"
 
 using namespace sf;
 using namespace std;
@@ -33,6 +34,9 @@ private:
 	Sound _correctSound;
 	Sound _failSound;
 
+	Stack enemyStack1Left, enemyStack1right, movingEnemies;
+	Enemy* floor1Enemy;
+
 	int values[10];
 	int lastCorrectIndex = 0;
 	bool isPlayerColliding;
@@ -51,5 +55,9 @@ private:
 	void InitClock();
 	void ShowGameOverScreen();
 	void CheckWinCondition();
+	void UpdateEnemies();
+	void DrawEnemies();
+	void InitFloor1();
+	void MoveEnemies();
 };
 

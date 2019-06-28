@@ -26,8 +26,6 @@ protected:
 	float _velocity = 0.0f;
 	float _speed = 10.0f;
 	bool colliding;
-	const int floor = 465;
-	const int maxJump = 395;
 	int platformPositions[7];
 	
 	int currentPlatform;

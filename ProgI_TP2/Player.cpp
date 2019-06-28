@@ -82,7 +82,6 @@ void Player::updateMovement() {
 	if (currentPlatform < 6  && y < platformPositions[currentPlatform + 1] && !isGrounded && velocityY < 0) {
 		y = platformPositions[currentPlatform];
 		currentPlatform++;
-		cout << "hola";
 	}
 }
 
