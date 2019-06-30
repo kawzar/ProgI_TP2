@@ -54,13 +54,6 @@ void Game::InputHandling()
 	{
 		_player->move(0.0f);
 	}
-
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-	{
-		_player->jump();
-		_jumpSound.play();
-	}
 }
 
 
@@ -74,6 +67,11 @@ void Game::EventHandling()
 			case Event::Closed:
 				_window->close();
 				break;
+			case Event::KeyPressed:
+				if (evt.key.code == sf::Keyboard::Space) {
+					_player->jump();
+					_jumpSound.play();
+				}
 		}
 	}
 }

@@ -12,13 +12,14 @@ Player::Player(const int positions[])
 	_sprite.setTexture(_tx);
 	_sprite.setOrigin(_tx.getSize().x / 2, _tx.getSize().y);
 	x = 160;
-	y = 525;
 	faceLeft = true;
 	currentPlatform = 0;
 
 	for (int i = 0; i < 7; i++) {
 		platformPositions[i] = positions[i];
 	}
+
+	y = platformPositions[currentPlatform];
 }
 
 
@@ -53,36 +54,15 @@ void Player::move(float velocity) {
 }
 
 void Player::jump() {
-	if (isGrounded) {
-		isGrounded = false;
-		velocityY = -15.0f;
+
+	if (currentPlatform < 6) {
+		currentPlatform++;
+		y = platformPositions[currentPlatform];
 	}
 }
 
 void Player::updateMovement() {
-
-	if (!isGrounded)
-	{
-		velocityY += gravity;
-	}
-	
-	velocityX += accelerationX;
-	velocityY += accelerationY;
-
 	x += velocityX;
-	y += velocityY;
-
-	isGrounded = y >= platformPositions[currentPlatform];
-
-	if (y > platformPositions[currentPlatform]) {
-		y = platformPositions[currentPlatform];
-		colliding = false;
-	}
-
-	if (currentPlatform < 6  && y < platformPositions[currentPlatform + 1] && !isGrounded && velocityY < 0) {
-		y = platformPositions[currentPlatform];
-		currentPlatform++;
-	}
 }
 
 FloatRect Player::getBounds() {

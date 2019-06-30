@@ -32,11 +32,6 @@ protected:
 	float x = 0;
 	float y = 0;
 	float velocityX = 0;
-	float velocityY = 0;
-	float accelerationX = 0;
-	float accelerationY = 0;
-	float gravity = 1;
-	bool isGrounded;
 	bool faceLeft;
 
 
