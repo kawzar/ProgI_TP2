@@ -42,6 +42,8 @@ private:
 	bool isPlayerColliding;
 	bool gameOver;
 	bool playerWon;
+	bool floor1MovingRight;
+	int floor1CountLeft, floor1CountRight;
 
 	const int amountOfBlocks = 10;
 

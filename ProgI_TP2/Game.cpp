@@ -111,7 +111,7 @@ void Game::InitWindow()
 
 
 void Game::InitClock() {
-	_time = sf::seconds(60.0f);
+	_time = sf::seconds(160.0f);
 	int seconds = _time.asSeconds();
 
 	if (!_font.loadFromFile("Less.otf"))
@@ -199,8 +199,12 @@ void Game::InitFloor1() {
 	enemyStack1Left.Push(new Enemy(EnemyColor::blue, 50, 450));
 	enemyStack1Left.Push(new Enemy(EnemyColor::red, 80, 450));
 	enemyStack1Left.Push(new Enemy(EnemyColor::yellow, 110, 450));
+	enemyStack1Left.Push(new Enemy(EnemyColor::green, 140, 450));
 
 	floor1Enemy = NULL;
+	floor1CountLeft = 4;
+	floor1CountRight = 0;
+	floor1MovingRight = true;
 }
 
 void Game::UpdateEnemies() {
@@ -214,14 +218,36 @@ void Game::DrawEnemies() {
 }
 
 void Game::MoveEnemies() {
-	if (floor1Enemy == NULL && !enemyStack1Left.IsEmpty()) {
+	if (floor1MovingRight && floor1Enemy == NULL && !enemyStack1Left.IsEmpty()) {
 		floor1Enemy = enemyStack1Left.Last();
 		floor1Enemy->move(1.0f);
 	}
-	else if (floor1Enemy && floor1Enemy->IsMovingRight() && ((enemyStack1right.Last() && floor1Enemy->GetXPosition() >= enemyStack1right.Last()->GetXPosition() - floor1Enemy->getBounds().width)|| floor1Enemy->GetXPosition() >= 750)) { 
+	else if (!floor1MovingRight && floor1Enemy == NULL && !enemyStack1right.IsEmpty()) {
+		floor1Enemy = enemyStack1right.Last();
+		floor1Enemy->move(-1.0f);
+	}
+	else if (floor1MovingRight && floor1Enemy && floor1Enemy->IsMovingRight() && ((enemyStack1right.Last() && floor1Enemy->GetXPosition() >= enemyStack1right.Last()->GetXPosition() - floor1Enemy->getBounds().width)|| floor1Enemy->GetXPosition() >= 750)) { 
 		floor1Enemy->move(0.0f); // stop moving
 		enemyStack1right.Push(floor1Enemy); // change stack
 		enemyStack1Left.Pop();
 		floor1Enemy = NULL;
+		floor1CountRight++;
+		floor1CountLeft--;
+
+		if (floor1CountRight == 4) {
+			floor1MovingRight = false;
+		}
+	}
+	else if (!floor1MovingRight && floor1Enemy && floor1Enemy->IsMovingLeft() && ((enemyStack1Left.Last() && floor1Enemy->GetXPosition() <= enemyStack1Left.Last()->GetXPosition() + floor1Enemy->getBounds().width) || floor1Enemy->GetXPosition() <= 50)) {
+		floor1Enemy->move(-0.0f); // stop moving
+		enemyStack1Left.Push(floor1Enemy); // change stack
+		enemyStack1right.Pop();
+		floor1Enemy = NULL;
+		floor1CountLeft++;
+		floor1CountRight--;
+
+		if (floor1CountLeft == 4) {
+			floor1MovingRight = true;
+		}
 	}
 }

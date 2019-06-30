@@ -22,7 +22,7 @@ private:
 	Texture _tx;
 	Sprite _sprite;
 	float _velocity = 0.0f;
-	float _speed = 10.0f;
+	float _speed = 30.0f;
 	bool colliding;
 
 	float x, y = 0;

@@ -63,7 +63,7 @@ void Enemy::move(float velocity) {
 
 void Enemy::updateMovement() {
 	
-	x += velocityX;
+	x += velocityX * _speed;
 }
 
 FloatRect Enemy::getBounds() {
