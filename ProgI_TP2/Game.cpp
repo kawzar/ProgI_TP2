@@ -6,7 +6,6 @@ using namespace std;
 
 
 Game::Game(){
-
 	float positions[] = { 524, 450, 374, 298, 222, 150, 74 };
 	for (int i = 0; i < 7; i++) {
 		platformPositions[i] = positions[i];
@@ -20,6 +19,7 @@ Game::Game(){
 	InitSound();
 	InitFloor1();
 	InitFloor2();
+	InitQueueFloors();
 }
 
 
@@ -223,12 +223,45 @@ void Game::InitFloor2() {
 	floor2MovingRight = true;
 }
 
+void Game::InitQueueFloors()
+{
+	floor3Enemy = NULL;
+	floor4Enemy = NULL;
+	floor5Enemy = NULL;
+	floor6Enemy = NULL;
+
+	enemyQueue3.Enqueue(new Enemy(EnemyColor::blue, 140, platformPositions[3]));
+	enemyQueue3.Enqueue(new Enemy(EnemyColor::red, 110, platformPositions[3]));
+	enemyQueue3.Enqueue(new Enemy(EnemyColor::yellow, 80, platformPositions[3]));
+	enemyQueue3.Enqueue(new Enemy(EnemyColor::green, 50, platformPositions[3]));
+
+	enemyQueue4.Enqueue(new Enemy(EnemyColor::blue, 660, platformPositions[4]));
+	enemyQueue4.Enqueue(new Enemy(EnemyColor::red, 690, platformPositions[4]));
+	enemyQueue4.Enqueue(new Enemy(EnemyColor::yellow, 720, platformPositions[4]));
+	enemyQueue4.Enqueue(new Enemy(EnemyColor::green, 750, platformPositions[4]));
+
+	enemyQueue5.Enqueue(new Enemy(EnemyColor::blue, 140, platformPositions[5]));
+	enemyQueue5.Enqueue(new Enemy(EnemyColor::red, 110, platformPositions[5]));
+	enemyQueue5.Enqueue(new Enemy(EnemyColor::yellow, 80, platformPositions[5]));
+	enemyQueue5.Enqueue(new Enemy(EnemyColor::green, 50, platformPositions[5]));
+
+	enemyQueue6.Enqueue(new Enemy(EnemyColor::blue, 660, platformPositions[6]));
+	enemyQueue6.Enqueue(new Enemy(EnemyColor::red, 690, platformPositions[6]));
+	enemyQueue6.Enqueue(new Enemy(EnemyColor::yellow, 720, platformPositions[6]));
+	enemyQueue6.Enqueue(new Enemy(EnemyColor::green, 750, platformPositions[6]));
+}			  
+
 
 void Game::UpdateEnemies() {
 	enemyStack1Left.Update();
 	enemyStack1right.Update();
 	enemyStack2Left.Update();
 	enemyStack2right.Update();
+
+	enemyQueue3.Update();
+	enemyQueue4.Update();
+	enemyQueue5.Update();
+	enemyQueue6.Update();
 }
 
 void Game::DrawEnemies() {
@@ -236,11 +269,17 @@ void Game::DrawEnemies() {
 	enemyStack1right.Draw(_window);
 	enemyStack2Left.Draw(_window);
 	enemyStack2right.Draw(_window);
+	
+	enemyQueue3.Draw(_window);
+	enemyQueue4.Draw(_window);
+	enemyQueue5.Draw(_window);
+	enemyQueue6.Draw(_window);
 }
 
 void Game::MoveEnemies() {
 	MoveFloor1();
 	MoveFloor2();
+	MoveQueueFloors();
 }
 
 void Game::MoveFloor1() {
@@ -310,5 +349,56 @@ void Game::MoveFloor2() {
 		if (floor2CountLeft == 4) {
 			floor2MovingRight = true;
 		}
+	}
+}
+
+void Game::MoveQueueFloors()
+{
+	if (floor3Enemy == NULL) {
+		floor3Enemy = enemyQueue3.First();
+		floor3Enemy->move(1.0f);
+	}
+	else if (floor3Enemy->GetXPosition() >= 800) {
+		floor3Enemy->move(0.0f);
+		enemyQueue3.RepositionEnemies(1.0f);
+		floor3Enemy->SetXPosition(enemyQueue3.Last()->GetXPosition() - enemyQueue3.Last()->getBounds().width);
+		enemyQueue3.Enqueue(enemyQueue3.Dequeue());
+		floor3Enemy = NULL;		
+	}
+
+	if (floor4Enemy == NULL) {
+		floor4Enemy = enemyQueue4.First();
+		floor4Enemy->move(-1.0f);
+	}
+	else if (floor4Enemy->GetXPosition() <= 0) {
+		floor4Enemy->move(0.0f);
+		enemyQueue4.RepositionEnemies(-1.0f);
+		floor4Enemy->SetXPosition(enemyQueue4.Last()->GetXPosition() + enemyQueue4.Last()->getBounds().width);
+		enemyQueue4.Enqueue(enemyQueue4.Dequeue());
+		floor4Enemy = NULL;
+	}
+
+	if (floor5Enemy == NULL) {
+		floor5Enemy = enemyQueue5.First();
+		floor5Enemy->move(1.0f);
+	}
+	else if (floor5Enemy->GetXPosition() >= 800) {
+		floor5Enemy->move(0.0f);
+		enemyQueue5.RepositionEnemies(1.0f);
+		floor5Enemy->SetXPosition(enemyQueue5.Last()->GetXPosition() - enemyQueue5.Last()->getBounds().width);
+		enemyQueue5.Enqueue(enemyQueue5.Dequeue());
+		floor5Enemy = NULL;
+	}
+
+	if (floor6Enemy == NULL) {
+		floor6Enemy = enemyQueue6.First();
+		floor6Enemy->move(-1.0f);
+	}
+	else if (floor6Enemy->GetXPosition() <= 0) {
+		floor6Enemy->move(0.0f);
+		enemyQueue6.RepositionEnemies(-1.0f);
+		floor6Enemy->SetXPosition(enemyQueue6.Last()->GetXPosition() + enemyQueue6.Last()->getBounds().width);
+		enemyQueue6.Enqueue(enemyQueue6.Dequeue());
+		floor6Enemy = NULL;
 	}
 }

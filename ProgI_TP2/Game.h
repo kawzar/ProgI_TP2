@@ -2,8 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Player.h"
-#include "Enemy.h"
 #include "Stack.h"
+#include "Queue.h"
 
 using namespace sf;
 using namespace std;
@@ -40,6 +40,12 @@ private:
 	Stack enemyStack2Left, enemyStack2right;
 	Enemy* floor2Enemy;
 
+	Queue enemyQueue3, enemyQueue4, enemyQueue5, enemyQueue6;
+	Enemy* floor3Enemy;
+	Enemy* floor4Enemy;
+	Enemy* floor5Enemy;
+	Enemy* floor6Enemy;
+
 	bool gameOver;
 	bool playerWon;
 	bool floor1MovingRight, floor2MovingRight;
@@ -62,8 +68,10 @@ private:
 	void DrawEnemies();
 	void InitFloor1();
 	void InitFloor2();
+	void InitQueueFloors();
 	void MoveEnemies();
 	void MoveFloor1();
 	void MoveFloor2();
+	void MoveQueueFloors();
 };
 

@@ -2,7 +2,7 @@
 
 
 
-Node::Node(int v, Node* n = NULL)
+Node::Node(int v, Node* n)
 {
 	value = v;
 	next = n;

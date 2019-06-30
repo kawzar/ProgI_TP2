@@ -17,15 +17,16 @@ public:
 	float GetXPosition();
 	bool IsMovingRight();
 	bool IsMovingLeft();
+	void SetXPosition(float xpos);
+	float GetOriginalXPosition();
 
 private:
 	Texture _tx;
 	Sprite _sprite;
 	float _velocity = 0.0f;
 	float _speed = 5.0f;
-	bool colliding;
 
-	float x, y = 0;
+	float x, y, origX = 0;
 	float velocityX = 0;
 	bool isGrounded;
 	bool faceLeft;

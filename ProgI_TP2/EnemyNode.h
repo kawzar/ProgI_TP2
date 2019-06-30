@@ -13,5 +13,6 @@ private:
 	EnemyNode* next;
 
 	friend class Stack;
+	friend class Queue;
 };
 typedef EnemyNode *pnode;

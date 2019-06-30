@@ -21,7 +21,7 @@ Enemy::Enemy(EnemyColor color, float posX, float posY)
 	_sprite.setTexture(_tx);
 	_sprite.setOrigin(_tx.getSize().x / 2, _tx.getSize().y);
 	
-	x = posX;
+	origX = x = posX;
 	y = posY;
 
 	faceLeft = true;
@@ -80,4 +80,12 @@ bool Enemy::IsMovingRight() {
 
 bool Enemy::IsMovingLeft() {
 	return velocityX < 0.0f;
+}
+
+void Enemy::SetXPosition(float xpos) {
+	x = xpos;
+}
+
+float Enemy::GetOriginalXPosition() {
+	return origX;
 }
