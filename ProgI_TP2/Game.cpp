@@ -115,7 +115,7 @@ void Game::InitWindow()
 
 
 void Game::InitClock() {
-	_time = sf::seconds(160.0f);
+	_time = sf::seconds(30.0f);
 	int seconds = _time.asSeconds();
 
 	if (!_font.loadFromFile("Less.otf"))
@@ -318,87 +318,97 @@ void Game::MoveFloor1() {
 }
 
 void Game::MoveFloor2() {
-	if (floor2MovingRight && floor2Enemy == NULL && !enemyStack2Left.IsEmpty()) {
-		floor2Enemy = enemyStack2Left.Last();
-		floor2Enemy->move(1.0f);
-	}
-	else if (!floor2MovingRight && floor2Enemy == NULL && !enemyStack2right.IsEmpty()) {
-		floor2Enemy = enemyStack2right.Last();
-		floor2Enemy->move(-1.0f);
-	}
-	else if (floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingRight() && ((enemyStack2right.Last() && floor2Enemy->GetXPosition() >= enemyStack2right.Last()->GetXPosition() - floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() >= 750)) {
-		floor2Enemy->move(0.0f); // stop moving
-		enemyStack2right.Push(floor2Enemy); // change stack
-		enemyStack2Left.Pop();
-		floor2Enemy = NULL;
-		floor2CountRight++;
-		floor2CountLeft--;
-
-		if (floor2CountRight == 4) {
-			floor2MovingRight = false;
+	if (_time <= sf::seconds(28.0f)) {
+		if (floor2MovingRight && floor2Enemy == NULL && !enemyStack2Left.IsEmpty()) {
+			floor2Enemy = enemyStack2Left.Last();
+			floor2Enemy->move(1.0f);
 		}
-	}
-	else if (!floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingLeft() && ((enemyStack2Left.Last() && floor2Enemy->GetXPosition() <= enemyStack2Left.Last()->GetXPosition() + floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() <= 50)) {
-		floor2Enemy->move(-0.0f); // stop moving
-		enemyStack2Left.Push(floor2Enemy); // change stack
-		enemyStack2right.Pop();
-		floor2Enemy = NULL;
-		floor2CountLeft++;
-		floor2CountRight--;
+		else if (!floor2MovingRight && floor2Enemy == NULL && !enemyStack2right.IsEmpty()) {
+			floor2Enemy = enemyStack2right.Last();
+			floor2Enemy->move(-1.0f);
+		}
+		else if (floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingRight() && ((enemyStack2right.Last() && floor2Enemy->GetXPosition() >= enemyStack2right.Last()->GetXPosition() - floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() >= 750)) {
+			floor2Enemy->move(0.0f); // stop moving
+			enemyStack2right.Push(floor2Enemy); // change stack
+			enemyStack2Left.Pop();
+			floor2Enemy = NULL;
+			floor2CountRight++;
+			floor2CountLeft--;
 
-		if (floor2CountLeft == 4) {
-			floor2MovingRight = true;
+			if (floor2CountRight == 4) {
+				floor2MovingRight = false;
+			}
+		}
+		else if (!floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingLeft() && ((enemyStack2Left.Last() && floor2Enemy->GetXPosition() <= enemyStack2Left.Last()->GetXPosition() + floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() <= 50)) {
+			floor2Enemy->move(-0.0f); // stop moving
+			enemyStack2Left.Push(floor2Enemy); // change stack
+			enemyStack2right.Pop();
+			floor2Enemy = NULL;
+			floor2CountLeft++;
+			floor2CountRight--;
+
+			if (floor2CountLeft == 4) {
+				floor2MovingRight = true;
+			}
 		}
 	}
 }
 
 void Game::MoveQueueFloors()
 {
-	if (floor3Enemy == NULL) {
-		floor3Enemy = enemyQueue3.First();
-		floor3Enemy->move(1.0f);
-	}
-	else if (floor3Enemy->GetXPosition() >= 800) {
-		floor3Enemy->move(0.0f);
-		enemyQueue3.RepositionEnemies(1.0f);
-		floor3Enemy->SetXPosition(enemyQueue3.Last()->GetXPosition() - enemyQueue3.Last()->getBounds().width);
-		enemyQueue3.Enqueue(enemyQueue3.Dequeue());
-		floor3Enemy = NULL;		
-	}
-
-	if (floor4Enemy == NULL) {
-		floor4Enemy = enemyQueue4.First();
-		floor4Enemy->move(-1.0f);
-	}
-	else if (floor4Enemy->GetXPosition() <= 0) {
-		floor4Enemy->move(0.0f);
-		enemyQueue4.RepositionEnemies(-1.0f);
-		floor4Enemy->SetXPosition(enemyQueue4.Last()->GetXPosition() + enemyQueue4.Last()->getBounds().width);
-		enemyQueue4.Enqueue(enemyQueue4.Dequeue());
-		floor4Enemy = NULL;
+	if (_time <= sf::seconds(28.5f)) {
+		if (floor3Enemy == NULL) {
+			floor3Enemy = enemyQueue3.First();
+			floor3Enemy->move(1.0f);
+		}
+		else if (floor3Enemy->GetXPosition() >= 800) {
+			floor3Enemy->move(0.0f);
+			enemyQueue3.RepositionEnemies(1.0f);
+			floor3Enemy->SetXPosition(enemyQueue3.Last()->GetXPosition() - enemyQueue3.Last()->getBounds().width);
+			enemyQueue3.Enqueue(enemyQueue3.Dequeue());
+			floor3Enemy = NULL;
+		}
 	}
 
-	if (floor5Enemy == NULL) {
-		floor5Enemy = enemyQueue5.First();
-		floor5Enemy->move(1.0f);
-	}
-	else if (floor5Enemy->GetXPosition() >= 800) {
-		floor5Enemy->move(0.0f);
-		enemyQueue5.RepositionEnemies(1.0f);
-		floor5Enemy->SetXPosition(enemyQueue5.Last()->GetXPosition() - enemyQueue5.Last()->getBounds().width);
-		enemyQueue5.Enqueue(enemyQueue5.Dequeue());
-		floor5Enemy = NULL;
+	if (_time <= sf::seconds(28.0f)) {
+		if (floor4Enemy == NULL) {
+			floor4Enemy = enemyQueue4.First();
+			floor4Enemy->move(-1.0f);
+		}
+		else if (floor4Enemy->GetXPosition() <= 0) {
+			floor4Enemy->move(0.0f);
+			enemyQueue4.RepositionEnemies(-1.0f);
+			floor4Enemy->SetXPosition(enemyQueue4.Last()->GetXPosition() + enemyQueue4.Last()->getBounds().width);
+			enemyQueue4.Enqueue(enemyQueue4.Dequeue());
+			floor4Enemy = NULL;
+		}
 	}
 
-	if (floor6Enemy == NULL) {
-		floor6Enemy = enemyQueue6.First();
-		floor6Enemy->move(-1.0f);
+	if (_time <= sf::seconds(27.5f)) {
+		if (floor5Enemy == NULL) {
+			floor5Enemy = enemyQueue5.First();
+			floor5Enemy->move(1.0f);
+		}
+		else if (floor5Enemy->GetXPosition() >= 800) {
+			floor5Enemy->move(0.0f);
+			enemyQueue5.RepositionEnemies(1.0f);
+			floor5Enemy->SetXPosition(enemyQueue5.Last()->GetXPosition() - enemyQueue5.Last()->getBounds().width);
+			enemyQueue5.Enqueue(enemyQueue5.Dequeue());
+			floor5Enemy = NULL;
+		}
 	}
-	else if (floor6Enemy->GetXPosition() <= 0) {
-		floor6Enemy->move(0.0f);
-		enemyQueue6.RepositionEnemies(-1.0f);
-		floor6Enemy->SetXPosition(enemyQueue6.Last()->GetXPosition() + enemyQueue6.Last()->getBounds().width);
-		enemyQueue6.Enqueue(enemyQueue6.Dequeue());
-		floor6Enemy = NULL;
+
+	if (_time <= sf::seconds(27.0f)) {
+		if (floor6Enemy == NULL) {
+			floor6Enemy = enemyQueue6.First();
+			floor6Enemy->move(-1.0f);
+		}
+		else if (floor6Enemy->GetXPosition() <= 0) {
+			floor6Enemy->move(0.0f);
+			enemyQueue6.RepositionEnemies(-1.0f);
+			floor6Enemy->SetXPosition(enemyQueue6.Last()->GetXPosition() + enemyQueue6.Last()->getBounds().width);
+			enemyQueue6.Enqueue(enemyQueue6.Dequeue());
+			floor6Enemy = NULL;
+		}
 	}
 }
