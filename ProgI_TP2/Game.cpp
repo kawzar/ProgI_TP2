@@ -11,12 +11,16 @@ Game::Game(){
 		platformPositions[i] = positions[i];
 	}
 
-	_player = new Player(platformPositions);
+	_player = new Player(platformPositions, 200.0f, 600.0f);
 	
+	srand(time(0));
+	float randomX = (rand() % 6) + 2;
+	_door = new Door(randomX * 100, platformPositions[6]);	
 
 	InitWindow();
 	InitClock();
 	InitSound();
+
 	InitFloor1();
 	InitFloor2();
 	InitQueueFloors();
@@ -35,6 +39,7 @@ void Game::Loop()
 			UpdateClock();
 			EventHandling();
 			InputHandling();
+			CheckCurrentFloorCollision();
 			MoveEnemies();
 			Update();
 			Draw();
@@ -86,7 +91,6 @@ void Game::Update()
 {
 	_player->update();
 	UpdateEnemies();
-
 }
 
 
@@ -99,6 +103,7 @@ void Game::Draw()
 	
 	_player->draw(_window);
 	DrawEnemies();
+	_door->draw(_window);
 	
 	_window->display();
 }
@@ -187,14 +192,15 @@ void Game::ShowGameOverScreen() {
 }
 
 void Game::CheckWinCondition() {
-	/*if (lastCorrectIndex == amountOfBlocks) {
-		gameOver = true;
-		playerWon = true;
-	}*/
-
 	if (_time <= sf::seconds(0.0f)) {
 		gameOver = true;
 		playerWon = false;
+	}
+
+	if (_player->getBounds().intersects(_door->getBounds())) {
+		gameOver = true;
+		playerWon = true;
+		_correctSound.play();
 	}
 
 }
@@ -410,5 +416,49 @@ void Game::MoveQueueFloors()
 			enemyQueue6.Enqueue(enemyQueue6.Dequeue());
 			floor6Enemy = NULL;
 		}
+	}
+}
+
+void Game::CheckCurrentFloorCollision()
+{
+	switch (_player->getCurrentPlatform()) {
+	case 0: 
+		break;
+	case 1:
+		if(floor1Enemy && floor1Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
+	case 2:
+		if (floor2Enemy && floor2Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
+	case 3 : 
+		if (floor3Enemy && floor3Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
+	case 4:
+		if (floor4Enemy && floor4Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
+	case 5:
+		if (floor5Enemy && floor5Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
+	case 6:
+		if (floor6Enemy && floor6Enemy->getBounds().intersects(_player->getBounds())) {
+			_player->getDamage();
+			_failSound.play();
+		}
+		break;
 	}
 }

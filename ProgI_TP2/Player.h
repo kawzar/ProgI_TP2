@@ -7,7 +7,7 @@ using namespace sf;
 class Player
 {
 public:
-	Player(const int positions[]);
+	Player(const int positions[], float minX, float maxX);
 	~Player();
 
 	void move(float velocity);
@@ -15,10 +15,8 @@ public:
 	void draw(RenderWindow * window);
 	void update();
 	FloatRect getBounds();
-
-	Vector2f getColliderPosition();
-	bool isColliding();
-	void collide();
+	int getCurrentPlatform();
+	void getDamage();
 
 protected:
 	Texture _tx;
@@ -32,6 +30,7 @@ protected:
 	float x = 0;
 	float y = 0;
 	float velocityX = 0;
+	float minX, maxX;
 	bool faceLeft;
 
 

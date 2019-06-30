@@ -6,7 +6,7 @@
 using namespace std;
 
 
-Player::Player(const int positions[])
+Player::Player(const int positions[], float minX, float maxX)
 {
 	_tx.loadFromFile("Images/jumper.png");
 	_sprite.setTexture(_tx);
@@ -20,6 +20,8 @@ Player::Player(const int positions[])
 	}
 
 	y = platformPositions[currentPlatform];
+	this->minX = minX;
+	this->maxX = maxX;
 }
 
 
@@ -63,20 +65,27 @@ void Player::jump() {
 
 void Player::updateMovement() {
 	x += velocityX;
+
+	if (x >= maxX) {
+		x = maxX;
+	}
+
+	if (x <= minX) {
+		x = minX;
+	}
 }
 
 FloatRect Player::getBounds() {
 	return _sprite.getGlobalBounds();
 }
 
-Vector2f Player::getColliderPosition() {
-	return Vector2f(_sprite.getPosition());
+int Player::getCurrentPlatform()
+{
+	return currentPlatform;
 }
 
-void Player::collide() {
-	colliding = true;
-}
-
-bool Player::isColliding() {
-	return colliding;
+void Player::getDamage()
+{
+	currentPlatform = 0;
+	y = platformPositions[0];
 }

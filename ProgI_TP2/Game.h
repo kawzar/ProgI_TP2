@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Stack.h"
 #include "Queue.h"
+#include "Door.h"
 
 using namespace sf;
 using namespace std;
@@ -20,6 +21,7 @@ private:
 	Texture _txBackground;
 	Sprite _background;
 	Player* _player;
+	Door* _door;
 	Clock _clock;
 	Time _time;
 	Text _txtTime;
@@ -73,5 +75,6 @@ private:
 	void MoveFloor1();
 	void MoveFloor2();
 	void MoveQueueFloors();
+	void CheckCurrentFloorCollision();
 };
 
