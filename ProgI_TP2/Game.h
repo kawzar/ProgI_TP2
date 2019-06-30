@@ -34,16 +34,17 @@ private:
 	Sound _correctSound;
 	Sound _failSound;
 
-	Stack enemyStack1Left, enemyStack1right, movingEnemies;
+	Stack enemyStack1Left, enemyStack1right;
 	Enemy* floor1Enemy;
 
-	int values[10];
-	int lastCorrectIndex = 0;
-	bool isPlayerColliding;
+	Stack enemyStack2Left, enemyStack2right;
+	Enemy* floor2Enemy;
+
 	bool gameOver;
 	bool playerWon;
-	bool floor1MovingRight;
-	int floor1CountLeft, floor1CountRight;
+	bool floor1MovingRight, floor2MovingRight;
+	int floor1CountLeft, floor1CountRight, floor2CountRight, floor2CountLeft;
+	int platformPositions[7];
 
 	const int amountOfBlocks = 10;
 
@@ -60,6 +61,9 @@ private:
 	void UpdateEnemies();
 	void DrawEnemies();
 	void InitFloor1();
+	void InitFloor2();
 	void MoveEnemies();
+	void MoveFloor1();
+	void MoveFloor2();
 };
 

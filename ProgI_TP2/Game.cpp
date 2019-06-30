@@ -5,15 +5,21 @@
 using namespace std;
 
 
-Game::Game()
-{
-	int platformPositions[] = { 524, 450, 374, 298, 222, 150, 74 };
+Game::Game(){
+
+	float positions[] = { 524, 450, 374, 298, 222, 150, 74 };
+	for (int i = 0; i < 7; i++) {
+		platformPositions[i] = positions[i];
+	}
+
 	_player = new Player(platformPositions);
+	
 
 	InitWindow();
 	InitClock();
 	InitSound();
 	InitFloor1();
+	InitFloor2();
 }
 
 
@@ -181,10 +187,10 @@ void Game::ShowGameOverScreen() {
 }
 
 void Game::CheckWinCondition() {
-	if (lastCorrectIndex == amountOfBlocks) {
+	/*if (lastCorrectIndex == amountOfBlocks) {
 		gameOver = true;
 		playerWon = true;
-	}
+	}*/
 
 	if (_time <= sf::seconds(0.0f)) {
 		gameOver = true;
@@ -194,10 +200,10 @@ void Game::CheckWinCondition() {
 }
 
 void Game::InitFloor1() {
-	enemyStack1Left.Push(new Enemy(EnemyColor::blue, 50, 450));
-	enemyStack1Left.Push(new Enemy(EnemyColor::red, 80, 450));
-	enemyStack1Left.Push(new Enemy(EnemyColor::yellow, 110, 450));
-	enemyStack1Left.Push(new Enemy(EnemyColor::green, 140, 450));
+	enemyStack1Left.Push(new Enemy(EnemyColor::blue, 50, platformPositions[1]));
+	enemyStack1Left.Push(new Enemy(EnemyColor::red, 80, platformPositions[1]));
+	enemyStack1Left.Push(new Enemy(EnemyColor::yellow, 110, platformPositions[1]));
+	enemyStack1Left.Push(new Enemy(EnemyColor::green, 140, platformPositions[1]));
 
 	floor1Enemy = NULL;
 	floor1CountLeft = 4;
@@ -205,17 +211,39 @@ void Game::InitFloor1() {
 	floor1MovingRight = true;
 }
 
+void Game::InitFloor2() {
+	enemyStack2Left.Push(new Enemy(EnemyColor::blue, 50, platformPositions[2]));
+	enemyStack2Left.Push(new Enemy(EnemyColor::red, 80, platformPositions[2]));
+	enemyStack2Left.Push(new Enemy(EnemyColor::yellow, 110, platformPositions[2]));
+	enemyStack2Left.Push(new Enemy(EnemyColor::green, 140, platformPositions[2]));
+
+	floor2Enemy = NULL;
+	floor2CountLeft = 4;
+	floor2CountRight = 0;
+	floor2MovingRight = true;
+}
+
+
 void Game::UpdateEnemies() {
 	enemyStack1Left.Update();
 	enemyStack1right.Update();
+	enemyStack2Left.Update();
+	enemyStack2right.Update();
 }
 
 void Game::DrawEnemies() {
 	enemyStack1Left.Draw(_window);
 	enemyStack1right.Draw(_window);
+	enemyStack2Left.Draw(_window);
+	enemyStack2right.Draw(_window);
 }
 
 void Game::MoveEnemies() {
+	MoveFloor1();
+	MoveFloor2();
+}
+
+void Game::MoveFloor1() {
 	if (floor1MovingRight && floor1Enemy == NULL && !enemyStack1Left.IsEmpty()) {
 		floor1Enemy = enemyStack1Left.Last();
 		floor1Enemy->move(1.0f);
@@ -246,6 +274,41 @@ void Game::MoveEnemies() {
 
 		if (floor1CountLeft == 4) {
 			floor1MovingRight = true;
+		}
+	}
+}
+
+void Game::MoveFloor2() {
+	if (floor2MovingRight && floor2Enemy == NULL && !enemyStack2Left.IsEmpty()) {
+		floor2Enemy = enemyStack2Left.Last();
+		floor2Enemy->move(1.0f);
+	}
+	else if (!floor2MovingRight && floor2Enemy == NULL && !enemyStack2right.IsEmpty()) {
+		floor2Enemy = enemyStack2right.Last();
+		floor2Enemy->move(-1.0f);
+	}
+	else if (floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingRight() && ((enemyStack2right.Last() && floor2Enemy->GetXPosition() >= enemyStack2right.Last()->GetXPosition() - floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() >= 750)) {
+		floor2Enemy->move(0.0f); // stop moving
+		enemyStack2right.Push(floor2Enemy); // change stack
+		enemyStack2Left.Pop();
+		floor2Enemy = NULL;
+		floor2CountRight++;
+		floor2CountLeft--;
+
+		if (floor2CountRight == 4) {
+			floor2MovingRight = false;
+		}
+	}
+	else if (!floor2MovingRight && floor2Enemy && floor2Enemy->IsMovingLeft() && ((enemyStack2Left.Last() && floor2Enemy->GetXPosition() <= enemyStack2Left.Last()->GetXPosition() + floor2Enemy->getBounds().width) || floor2Enemy->GetXPosition() <= 50)) {
+		floor2Enemy->move(-0.0f); // stop moving
+		enemyStack2Left.Push(floor2Enemy); // change stack
+		enemyStack2right.Pop();
+		floor2Enemy = NULL;
+		floor2CountLeft++;
+		floor2CountRight--;
+
+		if (floor2CountLeft == 4) {
+			floor2MovingRight = true;
 		}
 	}
 }
